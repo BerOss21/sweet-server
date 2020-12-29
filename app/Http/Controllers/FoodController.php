@@ -20,7 +20,7 @@ class FoodController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api')->only(["destroy","update","store"]);
+        $this->middleware(['auth:api','scope:admin'])->only(["destroy","update","store"]);
     }
     public function index()
     {

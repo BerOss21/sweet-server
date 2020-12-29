@@ -12,6 +12,12 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware(['auth:api','scope:admin'])->only(["destroy","update","index"]);
+        $this->middleware(['auth:api','scope:customer'])->only(["store"]);
+    }
     public function index()
     {
         $orders=Order::orderBy("created_at")->get();
