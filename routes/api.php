@@ -31,5 +31,6 @@ Route::get("foods/list/{category}","FoodController@getFood");
 Route::post("send",'ContactController@send');
 Route::resource("cart",'CartController');
 Route::resource("shipping",'ShippingController');
-Route::resource("orders",'OrderController');
+Route::resource("orders",'OrderController'); 
+Route::get("orders/getByState/{state}",'OrderController@getByState');
 

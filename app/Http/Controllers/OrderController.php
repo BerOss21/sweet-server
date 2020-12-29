@@ -100,4 +100,9 @@ class OrderController extends Controller
     {
         //
     }
+
+    public function getByState($state){
+        $orders=($state=="all")?(Order::orderBy("created_at")->get()):(Order::where("state",$state)->orderBy("created_at")->get());
+        return response()->json(["orders"=>$orders]);
+    }
 }
