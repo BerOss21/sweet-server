@@ -3,10 +3,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request; 
 use App\Http\Controllers\Controller; 
-use App\Customer; 
 use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Carbon\Carbon;
+use App\Customer; 
 use App\Profile;
 
 class CustomerController extends Controller 
@@ -43,9 +44,13 @@ public $successStatus = 200;
 
             if(password_verify($password,$customer->password)){
                 $customer->save();
+                $success=[
+                    "id"=>$customer->id,
+                    "image"=>$customer->image,
+                    "name"=>$customer->name,
+                    "email"=>$customer->email
+                ];
                 $success['token'] = $customer->createToken('Personal Access Token',['customer'])->accessToken; 
-                $success['name'] = $customer->name;
-                $success['id'] =  $customer->id;
                 return response()->json(['success' => $success], $this-> successStatus);
             } else {
                 return response()->json(['error'=>'Unauthorised'], 401);
@@ -70,10 +75,14 @@ public $successStatus = 200;
         }
         $input = $request->all(); 
         $input['password'] = bcrypt($input['password']); 
-        $user = Customer::create($input); 
-        $success['token'] =  $user->createToken('MyApp')-> accessToken; 
-        $success['name'] =  $user->name;
-        $success['id'] =  $user->id;
+        $user = Customer::create($input);  
+        $success=[
+            "id"=>$user->id,
+            "image"=>$user->image,
+            "name"=>$user->name,
+            "email"=>$user->email
+        ];
+        $success['token'] =  $user->createToken('MyApp')-> accessToken;
         /*$profile=new Profile;
         $profile->user_id=$user->id;
         $profile->save();*/
@@ -84,6 +93,26 @@ public $successStatus = 200;
     {
         $orders=Customer::find($id)->orders()->get();
         return response()->json(["orders"=>$orders]);
+    }
+
+    public function update(Request $request,$id){
+        $customer=Customer::find($id);
+        $data=[
+            "name"=>$request->name,
+            "email"=>$request->email
+        ];
+        if($request->image){
+            $image = $request->image;
+            $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($image)->resize(420, 240)->save(public_path('storage\images\customers\\').$name); 
+            if(Storage::disk('local')->exists('public/images/customers/'.$customer->image->basename)){
+                Storage::disk('local')->delete('public/images/customers/'.$customer->image->basename);
+            }
+            $data["image"]=$name;
+        }
+        $customer->update($data);
+        return response()->json(["success"=>$customer]);
+
     }
 
 }

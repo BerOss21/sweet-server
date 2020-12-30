@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 
 
 class Customer extends Authenticatable
@@ -43,5 +44,14 @@ class Customer extends Authenticatable
 
     public function orders(){
         return $this->hasMany("App\models\Order");
+    }
+
+    public function comments(){
+        return $this->hasMany("App\models\Comment");
+    }
+
+    public function getImageAttribute($value)
+    {
+       return(Storage::disk('local')->exists('public/images/customers/'.$value))? (\Image::make(public_path()."\\storage\\images\\customers\\".$value)->encode('data-url')):($value);
     }
 }

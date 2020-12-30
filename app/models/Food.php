@@ -19,5 +19,9 @@ class Food extends Model
        return(Storage::disk('local')->exists('public/images/foods/'.$value))? (\Image::make(public_path()."\\storage\\images\\foods\\".$value)->encode('data-url')):($value);
     }
 
+    public function comments(){
+        return $this->hasMany("App\models\Comment");
+    }
+
 
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\models\Order;
+use App\models\Comment;
 
-class OrderController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,14 +15,12 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:api','scope:admin'])->only(["destroy","update","index"]);
-        $this->middleware(['auth:api'])->only(["getByState"]);
-        $this->middleware(['auth:api','scope:customer'])->only(["store"]);
+        $this->middleware(['auth:api'])->only(["destroy","update","store"]);
     }
     public function index()
     {
-        $orders=Order::orderBy("created_at")->get();
-        return response()->json(["orders"=>$orders]);
+        $comments=Comment::with("customer")->orderBy("created_at")->get();
+        return response()->json(["comments"=>$comments]);
     }
 
     /**
@@ -43,21 +41,17 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order=Order::create([
-            "name"=>$request->name,
-            "phone"=>$request->phone,
-            "address"=>$request->address,
-            "message"=>$request->address,
-            "total"=>$request->total,
-            "customer_id"=>$request->customer_id,
-            "detail"=>serialize($request->detail)
+        $comment=Comment::create([
+            "content"=>$request->content,
+            "food_id"=>$request->food_id,
+            "customer_id"=>$request->customer_id
         ]);
-
-        if($order){
+        if($comment){
             return response()->json(["success"=>true]);
         }
+
         else{
-            return response()->json(["success"=>true]);
+            return response()->json(["success"=>false]);
         }
     }
 
@@ -69,7 +63,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $comments=Comment::where("food_id",$id)->with("customer")->orderBy("created_at")->get();
+        return response()->json(["comments"=>$comments]);
     }
 
     /**
@@ -92,10 +87,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order=Order::find($id);
-        if($order->update(["state"=>$request->state])){
-            return response()->json(["success"=>true]);
-        };
+        //
     }
 
     /**
@@ -106,11 +98,12 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
-
-    public function getByState($state){
-        $orders=($state=="all")?(Order::orderBy("created_at")->get()):(Order::where("state",$state)->orderBy("created_at")->get());
-        return response()->json(["orders"=>$orders]);
+        $comment=Comment::find($id);
+        if($comment->delete()){
+            return response()->json(["success"=>true]);
+        }
+        else{
+            return response()->json(["success"=>false]);
+        }
     }
 }

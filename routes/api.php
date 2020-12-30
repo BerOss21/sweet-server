@@ -29,6 +29,8 @@ Route::group( ['middleware' => ['auth:api','scope:admin'] ],function(){
 Route::post('login/customers', 'CustomerController@login');
 Route::post('register/customers', 'CustomerController@register');
 
+Route::patch('customers/{id}', 'CustomerController@update');
+
 Route::post('/password/email', 'ForgotPasswordController@sendResetLinkEmail');
 Route::post('/password/reset', 'ResetPasswordController@reset');
 
@@ -39,6 +41,7 @@ Route::get("foods/list/{category}","FoodController@getFood");
 Route::post("send",'ContactController@send');
 Route::resource("cart",'CartController');
 Route::resource("shipping",'ShippingController');
+Route::resource("comments",'CommentController');
 Route::resource("orders",'OrderController'); 
 Route::get("myOrders/{id}",'CustomerController@myOrders')->middleware(['auth:api','scope:customer']); 
 Route::get("orders/getByState/{state}",'OrderController@getByState');
