@@ -53,12 +53,26 @@ class FoodController extends Controller
      */
     public function store(FoodRequest $request)
     {
+        
+        $images= $request->gallery;
+        $gallery=[];
+        $c=0;
+        foreach($request->gallery as $value){
+            $c++;
+            $nameg = $c.time().'.' . explode('/', explode(':', substr($value, 0, strpos($value, ';')))[1])[1];
+            array_push($gallery,$nameg);
+            \Image::make($value)->resize(420, 240)->save(public_path('storage\images\gallery\\').$nameg);
+        }
+       // dd($gallery);
         $image = $request->image;
         $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
         \Image::make($image)->resize(420, 240)->save(public_path('storage\images\foods\\').$name);
+
+
         $food=Food::create([
             "name"=>$request->name,
             "image"=>$name,
+            "gallery"=>serialize($gallery),
             "description"=>$request->description,
             "category_id"=>$request->category,
             "price"=>$request->price
