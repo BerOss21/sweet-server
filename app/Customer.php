@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
+use App\Scopes\CustomerScope;
 
 
 class Customer extends Authenticatable
@@ -53,5 +54,14 @@ class Customer extends Authenticatable
     public function getImageAttribute($value)
     {
        return(Storage::disk('local')->exists('public/images/customers/'.$value))? (\Image::make(public_path()."\\storage\\images\\customers\\".$value)->encode('data-url')):($value);
+    }
+
+    /*protected static function booted()
+    {
+        static::addGlobalScope(new CustomerScope);
+    }*/
+
+    public function scopeNotAdmin($query){
+            return $query->where("name","!=","admin");
     }
 }

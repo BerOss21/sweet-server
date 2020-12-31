@@ -29,7 +29,9 @@ Route::group( ['middleware' => ['auth:api','scope:admin'] ],function(){
 Route::post('login/customers', 'CustomerController@login');
 Route::post('register/customers', 'CustomerController@register');
 
+Route::get('customers', 'CustomerController@index');
 Route::patch('customers/{id}', 'CustomerController@update');
+Route::delete('customers/{id}', 'CustomerController@destroy');
 
 Route::post('/password/email', 'ForgotPasswordController@sendResetLinkEmail');
 Route::post('/password/reset', 'ResetPasswordController@reset');
