@@ -126,6 +126,7 @@ class FoodController extends Controller
             "price"=>$request->price,
             "category_id"=>$request->category
         ];
+
         if($request->image){
             $image = $request->image;
             $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
@@ -134,6 +135,25 @@ class FoodController extends Controller
                 Storage::disk('local')->delete('public/images/foods/'.$request->img);
             }
             $data["image"]=$name;
+        }
+
+        if($request->gallery){
+            foreach($food->gallery as $img){
+                $basename=gettype($img)=="object"?$img->basename:"";
+                if(Storage::disk('local')->exists('public/images/gallery/'.$basename)){
+                    Storage::disk('local')->delete('public/images/gallery/'.$basename);
+                }
+            }
+            $images=[];
+            $names=[];
+            $c=0;
+            foreach($request->gallery as $img){
+                $c++;
+                $name = $c.time().'.' . explode('/', explode(':', substr($img, 0, strpos($img, ';')))[1])[1];
+                array_push($names,$name);
+                \Image::make($img)->resize(420, 240)->save(public_path('storage\images\gallery\\').$name); 
+            }
+            $data["gallery"]=serialize($names);
         }
         $food->update($data);
         return response()->json(["success"=>true,"msg"=>"Food updated with success"]);
@@ -153,6 +173,12 @@ class FoodController extends Controller
             if(Storage::disk('local')->exists('public/images/foods/'.$food_img)){
                 Storage::disk('local')->delete('public/images/foods/'.$food_img);
             } 
+            foreach($food->gallery as $img){
+                $basename=gettype($img)=="object"?$img->basename:"";
+                if(Storage::disk('local')->exists('public/images/gallery/'.$basename)){
+                    Storage::disk('local')->delete('public/images/gallery/'.$basename);
+                }
+            }
             return response()->json(["success"=>true,"msg"=>"Food deleted with success"]);
         }
         else{
