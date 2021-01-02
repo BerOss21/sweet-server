@@ -36,6 +36,9 @@ Route::delete('customers/{id}', 'CustomerController@destroy');
 Route::post('/password/email', 'ForgotPasswordController@sendResetLinkEmail');
 Route::post('/password/reset', 'ResetPasswordController@reset');
 
+Route::post('customer/password/email', 'ForgotPasswordCustomerController@sendResetLinkEmail');
+Route::post('customer/password/reset', 'ResetPasswordCustomerController@reset');
+
 Route::resource("categories","CategoryController");
 Route::resource("foods","FoodController");
 Route::resource("staffs","StaffsController");

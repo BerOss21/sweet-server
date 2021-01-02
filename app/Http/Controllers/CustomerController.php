@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Customer; 
 use App\Profile;
 
+
 class CustomerController extends Controller 
 {
 public $successStatus = 200;
@@ -134,5 +135,6 @@ public $successStatus = 200;
             return response()->json(["error"=>true,"msg"=>"customer not deleted"]);
         }
     }
+  
 
 }

@@ -16,7 +16,8 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^7.29",
         "laravel/passport": "~9.0",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "laravel/ui": "^2.4"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

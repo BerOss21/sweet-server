@@ -57,6 +57,7 @@ class FoodController extends Controller
         $images= $request->gallery;
         $gallery=[];
         $c=0;
+       // dd($request->gallery);
         foreach($request->gallery as $value){
             $c++;
             $nameg = $c.time().'.' . explode('/', explode(':', substr($value, 0, strpos($value, ';')))[1])[1];

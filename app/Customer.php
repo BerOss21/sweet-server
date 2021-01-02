@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 use App\Scopes\CustomerScope;
+use App\Notifications\PasswordResetCustomerNotification;
 
 
 class Customer extends Authenticatable
@@ -62,6 +63,14 @@ class Customer extends Authenticatable
     }*/
 
     public function scopeNotAdmin($query){
-            return $query->where("name","!=","admin");
+        return $query->where("name","!=","admin");
     }
+
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new PasswordResetCustomerNotification($token));
+    }
+
+
 }
