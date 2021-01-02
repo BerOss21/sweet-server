@@ -31,7 +31,12 @@ class FoodController extends Controller
 
     public function getFood($category)
     {
-        $foods=Food::where("category_id",$category)->with("category")->orderBy("created_at")->paginate(12);
+        if($category==0){
+            $foods=Food::with("category")->orderBy("created_at")->paginate(12);
+        }
+        else{
+            $foods=Food::where("category_id",$category)->with("category")->orderBy("created_at")->paginate(12);
+        }
         return response()->json(["foods"=>$foods]);
     }
 
