@@ -32,10 +32,10 @@ class FoodController extends Controller
     public function getFood($category)
     {
         if($category==0){
-            $foods=Food::with("category")->orderBy("created_at")->paginate(12);
+            $foods=Food::with("category","comments")->orderBy("created_at")->paginate(12);
         }
         else{
-            $foods=Food::where("category_id",$category)->with("category")->orderBy("created_at")->paginate(12);
+            $foods=Food::with("category","comments")->where("category_id",$category)->with("category")->orderBy("created_at")->paginate(12);
         }
         return response()->json(["foods"=>$foods]);
     }
@@ -100,7 +100,7 @@ class FoodController extends Controller
      */
     public function show($id)
     {
-        $food=Food::where("name",$id)->with("category")->orderBy("created_at","desc")->get();
+        $food=Food::where("name",$id)->with("category","comments.customer")->orderBy("created_at","desc")->get();
         return response()->json(["food"=>$food]);
     }
 

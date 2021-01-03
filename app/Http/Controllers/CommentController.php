@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\Comment;
+use App\models\Food;
 
 class CommentController extends Controller
 {
@@ -106,4 +107,15 @@ class CommentController extends Controller
             return response()->json(["success"=>false]);
         }
     }
+
+    
+    public function getComments($name)
+    {
+
+        $food=Food::where("name",$name)->get();
+        $comment=$food->comments()->with("customers")->get();
+        return response()->json(["comments"=>$comments]);
+    }
+
+
 }

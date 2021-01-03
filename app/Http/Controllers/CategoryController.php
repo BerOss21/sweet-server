@@ -47,7 +47,7 @@ class CategoryController extends Controller
     {
         $image = $request->image;
         $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-        \Image::make($image)->save(public_path('storage\images\categories\\').$name);
+        \Image::make($image)->resize(420, 240)->save(public_path('storage\images\categories\\').$name);
         $category=Category::create([
             "name"=>$request->name,
             "image"=>$name,
@@ -101,7 +101,7 @@ class CategoryController extends Controller
         if($request->image){
             $image = $request->image;
             $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-            \Image::make($image)->save(public_path('storage\images\categories\\').$name); 
+            \Image::make($image)->resize(420, 240)->save(public_path('storage\images\categories\\').$name); 
             if(Storage::disk('local')->exists('public/images/categories/'.$request->img)){
                 Storage::disk('local')->delete('public/images/categories/'.$request->img);
             }

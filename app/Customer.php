@@ -54,7 +54,7 @@ class Customer extends Authenticatable
 
     public function getImageAttribute($value)
     {
-       return(Storage::disk('local')->exists('public/images/customers/'.$value))? (\Image::make(public_path()."\\storage\\images\\customers\\".$value)->encode('data-url')):($value);
+       return(Storage::disk('local')->exists('public/images/customers/'.$value))? (\Image::make(public_path()."\\storage\\images\\customers\\".$value)->resize(420, 240)->encode('data-url')):($value);
     }
 
     /*protected static function booted()
