@@ -13,7 +13,7 @@ class ContactController extends Controller
             'name'=>'required',
             'email'=>'required|email',
             'subject'=>'required',
-            'message'=>'required',
+            'msg'=>'required',
         ]);
         
         if ($validator->fails()) {
@@ -21,7 +21,7 @@ class ContactController extends Controller
         }
         else{
             Mail::send('contact',[
-                'msg'=>$request->message
+                'msg'=>$request->msg
             ],function($mail) use($request){
                 $mail->from($request->email,$request->name);
                 $mail->to('samir@gmail.com')->subject($request->subject);

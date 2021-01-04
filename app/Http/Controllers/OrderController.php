@@ -15,13 +15,13 @@ class OrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth:api','scope:admin'])->only(["destroy","update","index"]);
+        $this->middleware(['auth:api'])->only(["destroy","update","index"]);
         $this->middleware(['auth:api'])->only(["getByState"]);
-        $this->middleware(['auth:api','scope:customer'])->only(["store"]);
+        $this->middleware('auth:api,customer')->only("store");
     }
     public function index()
     {
-        $orders=Order::orderBy("created_at")->get();
+        $orders=Order::latest()->get();
         return response()->json(["orders"=>$orders]);
     }
 

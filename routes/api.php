@@ -49,7 +49,7 @@ Route::resource("shipping",'ShippingController');
 Route::resource("comments",'CommentController');
 Route::get("commentsByName/{name}",'CommentController@getComments');
 Route::resource("orders",'OrderController'); 
-Route::get("myOrders/{id}",'CustomerController@myOrders')->middleware(['auth:api','scope:customer']); 
+Route::get("myOrders/{id}",'CustomerController@myOrders')->middleware(['auth:api,customer']); 
 Route::get("orders/getByState/{state}",'OrderController@getByState');
 
 Route::post("images",'ImageController@image'); 

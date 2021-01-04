@@ -65,6 +65,10 @@ public $successStatus = 200;
      */ 
     public function register(Request $request) 
     { 
+        $customer=Customer::where("email",$request->email)->get();
+        if(count($customer)){
+            return response()->json(["error"=>"Email déja utilisé"]);
+        }
         $validator = Validator::make($request->all(), [ 
             'name' => 'required', 
             'email' => 'required|email', 
@@ -76,10 +80,11 @@ public $successStatus = 200;
         }
         $input = $request->all(); 
         $input['password'] = bcrypt($input['password']); 
+        $input["image"]="profile.png";
         $user = Customer::create($input);  
         $success=[
             "id"=>$user->id,
-            "image"=>"not available",
+            "image"=>$user->image,
             "name"=>$user->name,
             "email"=>$user->email
         ];
@@ -125,7 +130,7 @@ public $successStatus = 200;
         $customer=Customer::find($id);
         $customer->comments()->delete();
         $customer_img=$customer->image->basename?$customer->image->basename:"";
-        if($customer->delete()){ 
+        if($customer->delete() && $customer_img!="profile.png" ){ 
             if(Storage::disk('local')->exists('public/images/customers/'.$customer_img)){
                 Storage::disk('local')->delete('public/images/customers/'.$customer_img);
             } 
