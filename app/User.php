@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -39,8 +40,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+  
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new PasswordResetNotification($token));
+    }
+
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'isAdmin';
     }
 }

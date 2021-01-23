@@ -7,6 +7,7 @@ use App\models\Food;
 use App\models\Category;
 use App\Http\Requests\FoodRequest;
 use App\Http\Requests\EditFoodRequest;
+use App\User;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -162,7 +163,7 @@ class FoodController extends Controller
             $data["gallery"]=serialize($names);
         }
         $food->update($data);
-        return response()->json(["success"=>true,"msg"=>"Food updated with success"]);
+        return response()->json(["success"=>true,"msg"=>"Data updated with success"]);
     }
 
     /**
@@ -185,10 +186,10 @@ class FoodController extends Controller
                     Storage::disk('local')->delete('public/images/gallery/'.$basename);
                 }
             }
-            return response()->json(["success"=>true,"msg"=>"Food deleted with success"]);
+            return response()->json(["success"=>true,"msg"=>"Data deleted with success"]);
         }
         else{
-            return response()->json(["error"=>true,"msg"=>"Food not deleted"]);
+            return response()->json(["error"=>true,"msg"=>"Data not deleted"]);
         }
     }
 }

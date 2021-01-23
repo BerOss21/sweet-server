@@ -18,8 +18,12 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
+
 Route::post('login', 'userController@login');
 Route::post('register', 'userController@register');
+Route::get("getNotifications",'userController@getNotifications')->middleware("auth:api");
+Route::get("markAsRead/{id}",'userController@markAsRead')->middleware("auth:api");
+Route::get("deleteNotif/{id}",'userController@deleteNotif')->middleware("auth:api");
 
 Route::group( ['middleware' => ['auth:api','scope:admin'] ],function(){
     Route::get('dashboard','CustomerController@dashboard');

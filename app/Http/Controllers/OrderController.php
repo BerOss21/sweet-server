@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\models\Order;
+use App\User;
+use App\Notifications\NewOrderNotification;
 
 class OrderController extends Controller
 {
@@ -47,17 +49,20 @@ class OrderController extends Controller
             "name"=>$request->name,
             "phone"=>$request->phone,
             "address"=>$request->address,
-            "message"=>$request->address,
+            "message"=>$request->message,
             "total"=>$request->total,
             "customer_id"=>$request->customer_id,
             "detail"=>serialize($request->detail)
         ]);
 
         if($order){
+            $user=User::whereId(1)->first();
+            $myOrder=Order::whereId($order->id)->with("customer")->first();
+            $user->notify(new NewOrderNotification($order->id,$order->name,$myOrder->customer->image,"You have a new order from ".$order->name));
             return response()->json(["success"=>true]);
         }
         else{
-            return response()->json(["success"=>true]);
+            return response()->json(["error"=>"You connot make an order"]);
         }
     }
 

@@ -93,7 +93,7 @@ public $successStatus = 200;
     }
 
     public function index(){
-        $customers=Customer::notAdmin()->with("orders")->orderBy("created_at")->get();
+        $customers=Customer::notAdmin()->with("orders")->orderBy("created_at","desc")->get();
         return response()->json(["customers"=>$customers]);
     }
 

@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use App\Profile;
+use App\models\Notification;
 
 class userController extends Controller 
 {
@@ -56,4 +57,29 @@ public $successStatus = 200;
         return response()->json(['success'=>$success], $this-> successStatus); 
     }
 
+    public function getNotifications(){
+        $user=User::find(1);
+        $unread=Notification::whereNull("read_at")->orderBy("created_at")->get();
+        $notifications=Notification::orderBy("created_at","desc")->get();
+
+        return response()->json(['notifications'=>$notifications,'unread'=>$unread]);
+    }
+
+    public function markAsRead($id){
+        $notification=Notification::whereId($id)->first();
+        $notification->markAsRead();
+        $notifications=Notification::orderBy("created_at","desc")->get();
+        $unread=Notification::whereNull("read_at")->orderBy("created_at")->get();
+
+        return response()->json(['notifications'=>$notifications,'unread'=>$unread]);
+    }
+    
+    public function deleteNotif($id){
+        $notification=Notification::whereId($id)->first();
+        $notification->delete();
+        $notifications=Notification::orderBy("created_at","desc")->get();
+        $unread=Notification::whereNull("read_at")->orderBy("created_at")->get();
+        return response()->json(['notifications'=>$notifications,'unread'=>$unread]);
+    }
+   
 }
